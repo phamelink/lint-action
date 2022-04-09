@@ -82,10 +82,10 @@ async function runAction() {
 
 			// Lint and optionally auto-fix the matching files, parse code style violations
 			core.info(
-				`Linting ${autoFix ? "and auto-fixing " : ""}files in ${lintDirAbs} ` +
+				`Linting ${autoFix && linterAutoFix ? "and auto-fixing " : ""}files in ${lintDirAbs} ` +
 					`with ${linter.name} ${args ? `and args: ${args}` : ""}…`,
 			);
-			const lintOutput = linter.lint(lintDirAbs, fileExtList, args, autoFix, prefix);
+			const lintOutput = linter.lint(lintDirAbs, fileExtList, args, autoFix && linterAutoFix, prefix);
 
 			// Parse output of linting command
 			const lintResult = linter.parseOutput(context.workspace, lintOutput);
@@ -98,7 +98,7 @@ async function runAction() {
 				hasFailures = true;
 			}
 
-			if (autoFix) {
+			if (autoFix && linterAutoFix) {
 				// Commit and push auto-fix changes
 				if (git.hasChanges()) {
 					git.commitChanges(commitMessage.replace(/\${linter}/g, linter.name), skipVerification);
