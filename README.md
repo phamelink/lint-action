@@ -303,7 +303,8 @@ jobs:
 - **`[linter]_args`**: Additional arguments to pass to the linter. Example: `eslint_args: "--max-warnings 0"` if ESLint checks should fail even if there are no errors and only warnings. Default: `""`
 - **`[linter]_dir`**: Directory where the linting command should be run. Example: `eslint_dir: server/` if ESLint is installed in the `server` subdirectory. Default: Repository root
 - **`[linter]_extensions`:** Extensions of files to check with the linter. Example: `eslint_extensions: js,ts` to lint JavaScript and TypeScript files with ESLint. Default: Varies by linter, see [`action.yml`](./action.yml)
-- **`[linter]_command_prefix`:** Command prefix to be run before the linter command. Default: `""`.
+- **`[linter]_command_prefix`:** Command prefix to be run before the linter command. Default: `""`
+- **`[linter]_auto_fix`:** Whether the linter should try to fix code style issues automatically. This option is useful to commit and push changes only for specific linters and not all of them when [`auto_fix` option](#auto_fix) is set. Default: `true`.
 
 ### General options
 
@@ -311,7 +312,7 @@ jobs:
 
 - **`continue_on_error`:** Whether the workflow run should also fail when linter failures are detected. Default: `true`
 
-- **`auto_fix`:** Whether linters should try to fix code style issues automatically. If some issues can be fixed, the action will commit and push the changes to the corresponding branch. Default: `false`
+- **`auto_fix`:**<a id="auto_fix" /> Whether linters should try to fix code style issues automatically. If some issues can be fixed, the action will commit and push the changes to the corresponding branch. Default: `false`
 
   <p align="center">
     <img src="./.github/screenshots/auto-fix.png" alt="Screenshot of auto-fix commit" width="80%" />
