@@ -94,8 +94,10 @@ async function runAction() {
 				`${linter.name} found ${summary} (${lintResult.isSuccess ? "success" : "failure"})`,
 			);
 
-			if (!lintResult.isSuccess) {
-				hasFailures = true;
+			if (    !lintResult.isSuccess      ) {
+				
+				
+				hasFailures = true
 			}
 
 			if (autoFix) {
