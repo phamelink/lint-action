@@ -3,7 +3,7 @@ const { join } = require("path");
 const core = require("@actions/core");
 
 const git = require("./git");
-const { createCheck } = require("./github/api");
+const { createCheck } = require("./github/api")
 const { getContext } = require("./github/context");
 const linters = require("./linters");
 const { getSummary } = require("./utils/lint-result");
@@ -32,7 +32,7 @@ async function runAction() {
 	}
 	if (isPullRequest && context.repository.hasFork && autoFix) {
 		core.error(
-			"This action does not have permission to push to forks. You may want to run it only on `push` events.",
+			'This action does not have permission to push to forks. You may want to run it only on `push` events.',
 		);
 	}
 
