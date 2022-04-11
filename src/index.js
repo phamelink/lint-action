@@ -58,6 +58,8 @@ async function runAction() {
 	let hasFailures = false;
 	const checks = [];
 
+	let excludedFileExtList = [];
+
 	// Loop over all available linters
 	for (const [linterId, linter] of Object.entries(linters)) {
 		// Determine whether the linter should be executed on the commit
@@ -80,12 +82,18 @@ async function runAction() {
 			const fileExtList = fileExtensions.split(",");
 			core.info(`Will use ${linter.name} to check the files with extensions ${fileExtList}`);
 
+			if (!linterAutoFix) {
+				fileExtList.forEach(ext => {
+					excludedFileExtList.add("':!*." + ext + "'")
+				});
+			}
+
 			// Lint and optionally auto-fix the matching files, parse code style violations
 			core.info(
-				`Linting ${autoFix ? "and auto-fixing " : ""}files in ${lintDirAbs} ` +
+				`Linting ${autoFix && linterAutoFix ? "and auto-fixing " : ""}files in ${lintDirAbs} ` +
 					`with ${linter.name} ${args ? `and args: ${args}` : ""}…`,
 			);
-			const lintOutput = linter.lint(lintDirAbs, fileExtList, args, autoFix, prefix);
+			const lintOutput = linter.lint(lintDirAbs, fileExtList, args, autoFix && linterAutoFix, prefix);
 
 			// Parse output of linting command
 			const lintResult = linter.parseOutput(context.workspace, lintOutput);
@@ -98,10 +106,10 @@ async function runAction() {
 				hasFailures = true;
 			}
 
-			if (autoFix) {
+			if (autoFix && linterAutoFix) {
 				// Commit and push auto-fix changes
-				if (git.hasChanges()) {
-					git.commitChanges(commitMessage.replace(/\${linter}/g, linter.name), skipVerification);
+				if (git.hasChanges(excludedFileExtList.join(" "))) {
+					git.commitChanges(commitMessage.replace(/\${linter}/g, linter.name), skipVerification, excludedFileExtList.join(" "));
 					git.pushChanges(skipVerification);
 				}
 			}

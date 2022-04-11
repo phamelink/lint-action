@@ -42,9 +42,10 @@ function checkOutRemoteBranch(context) {
  * @param {string} message - Git commit message
  * @param {boolean} skipVerification - Skip Git verification
  */
-function commitChanges(message, skipVerification) {
+function commitChanges(message, skipVerification, excluded) {
 	core.info(`Committing changes`);
-	run(`git commit -am "${message}"${skipVerification ? " --no-verify" : ""}`);
+	run(`git add --all -- ${excluded}`);
+	run(`git commit -m "${message}"${skipVerification ? " --no-verify" : ""}`);
 }
 
 /**
@@ -61,8 +62,8 @@ function getHeadSha() {
  * Checks whether there are differences from HEAD
  * @returns {boolean} - Boolean indicating whether changes exist
  */
-function hasChanges() {
-	const output = run("git diff-index --name-status --exit-code HEAD --", { ignoreErrors: true });
+function hasChanges(excluded) {
+	const output = run(`git diff-index --name-status --exit-code HEAD -- ${excluded}`, { ignoreErrors: true });
 	const hasChangedFiles = output.status === 1;
 	core.info(`${hasChangedFiles ? "Changes" : "No changes"} found with Git`);
 	return hasChangedFiles;
